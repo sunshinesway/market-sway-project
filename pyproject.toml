@@ -1,0 +1,13 @@
+[project]
+name = "market-sway"
+version = "1.0.0"
+dependencies = [
+  "fastapi[standard]>=0.141.1",
+  "python-dotenv",
+  'yfinance'
+]
+requires-python = ">=3.12"
+authors = [
+  {name = "Cheyenne Swasey", email = "cheyenneswasey@gmail.com"}
+]
+license = "MIT"
