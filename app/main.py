@@ -11,13 +11,14 @@
 #     return {'item_id': item_id, 'q': q}
 from .db_connection import get_engine
 from .seed_instruments import seed
-
+from .fetch_prices import insert_prices
 print('hello world')
 
 
 db_engine = get_engine()
 # print(db_conn)
 # seed(db_engine)
+insert_prices(db_engine)
 
 print('2hello world2')
 # import yfinance as yf
