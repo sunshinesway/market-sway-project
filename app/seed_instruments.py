@@ -8,7 +8,7 @@ INSERT_QUERY = text("""
     VALUES (:symbol, :name, :asset_class, :currency, :is_active)
     ON CONFLICT (symbol) DO NOTHING
 """)
-TICKERS = ['AAPL', 'MSFT', 'COST', 'WK', 'VTI']
+TICKERS = ['AAPL', 'MSFT', 'COST', 'WK', 'VTI', 'GOOGL']
 
 def fetch_info(ticker: str) -> dict:
     info = yf.Ticker(ticker).info
