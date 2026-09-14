@@ -48,14 +48,14 @@ def format_error(e: Exception, max_len:int = 300) -> str:
     if len(error_message) > max_len:
         error_message = message[:max_len].rstrip() + '. . .'
     return error_message
-    
+
 def get_instruments(engine) -> dict:
     with engine.begin() as conn:
         result = conn.execute(SELECT_INSTRUMENTS_QUERY)
         return result
 
 def fetch_prices(ticker: str):
-    price_data = yf.Ticker(ticker).history(period='1d', actions=False)
+    price_data = yf.Ticker(ticker).history(period='1d',actions=False)
     # print('Price data: \n')
     # print(price_data)
     if price_data.empty:
@@ -71,7 +71,7 @@ def convert_data(price_data, id, source) -> dict:
         'high': float(price_data['High'].iloc[0]),
         'low': float(price_data['Low'].iloc[0]),
         'close': float(price_data['Close'].iloc[0]),
-        'volume': int(price_data['Volume'].iloc[0]), 
+        'volume': int(price_data['Volume'].iloc[0]),
         'source': source
     }
 
@@ -123,7 +123,7 @@ def ingest(engine):
             print(f'ERROR FETCHING SYMBOL {row.symbol}:\t{e}')
             continue
     # print('3: Prices fetched, converted')
-    
+
     try:
         if price_rows:
             insert_prices(engine, price_rows)

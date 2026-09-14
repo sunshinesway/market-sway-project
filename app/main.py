@@ -12,16 +12,22 @@
 from .db_connection import get_engine
 from .seed_instruments import seed
 from .ingest_prices import ingest
-print('hello world')
+from .seed_portfolio import seed_portfolio
 
+def do_fetch_ingest():
+    print('Start DB engine')
 
-db_engine = get_engine()
-# print(db_conn)
-# seed(db_engine)
+    db_engine = get_engine()
 
-ingest(db_engine)
+    print('Fetch and ingest prices')
+    # seed_portfolio(db_engine)
+    ingest(db_engine)
+    # seed(db_engine, ['AAPL', 'MSFT', 'COST', 'WK', 'VTI', 'GOOGL'])
+    
+    print('Complete')
 
-print('2hello world2')
+do_fetch_ingest()
+
 # import yfinance as yf
 
 # ticker_symbol = "AAPL"
@@ -34,4 +40,3 @@ print('2hello world2')
 
 # print('\nFast-Info:')
 # print(ticker.fast_info)
-
