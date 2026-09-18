@@ -5,7 +5,7 @@
 from sqlalchemy import text
 from .transaction import Transaction
 from .portfolio import Portfolio
-
+from .pricing import calc_value
 
 # get portfolios
 SELECT_PORTFOLIOS_QUERY = text("""
@@ -41,7 +41,7 @@ def get_transactions(engine, portfolio_id):
 def get_instrument_symbol(engine, instrument_id):
     try:
         with engine.begin() as conn:
-            result = conn.execute(SELECT_INSTRUMENT_QUERY, {'instrument_id': instrument_id})
+            result = conn.execute(SELECT_INSTRUMENT_QUERY, {'instrument_id': instrument_id}).fetchone().symbol
             return result
     except Exception as e:
         print(f'ERROR GETTING INSTRUMENT\n{e}')
@@ -55,24 +55,29 @@ def reconstruct_holdings(engine): # returns portfolio objects
     for p in p_s:
         print(f'Fetching transactions for portfolio {p.name} . . .')
         transactions = get_transactions(engine, p.id)
-        print(f'Fetched {transactions.rowcount} transaction(s) from DB'
-        )
+        print(f'Fetched {transactions.rowcount} transaction(s) from DB')
+        
         p_trans: list[Transaction] = []
-        print(f'type of p_trans: {type(p_trans)}')
-        # TODO: create Portfolio object, save transactions there to calc holdings
         for t in transactions:
-            s = get_instrument_symbol(engine, t.instrument_id)
-            symbol = s.fetchone().symbol
+            symbol = get_instrument_symbol(engine, t.instrument_id)
+            
             transaction = Transaction(t.id, t.portfolio_id, t.instrument_id, symbol, t.txn_date, t.txn_type, t.quantity, t.price, t.amount)
-            print(f'Transaction created: {transaction}')
-            # print(transaction.txn_type)
-            # if symbol in p_trans:
-            #     p_trans[symbol].append(transaction)
-            # else: p_trans[symbol] = [transaction]
+            # print(f'Transaction created: {transaction}')
+
             p_trans.append(transaction)
 
-        portfolios.append(Portfolio(p.id, p.name, p.base_currency, p_trans))
-    
+        new_p = Portfolio(p.id, p.name, p.base_currency, p_trans)
+        
+            
+        portfolios.append(new_p)
+
     for p in portfolios:
+        
         print(p)
+        print('Current holdings:')
+        for s, q in p.holdings.items():
+            print(f'Symbol: {s}')
+            value = calc_value(engine, s, q)
+    print()
+        
     return portfolios

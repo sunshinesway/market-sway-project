@@ -34,5 +34,3 @@ class Portfolio:
 
         return quantities
 
-    # # return value of instrument in a portfolio
-    # def calc_value(self, symbol, quantity, date=date.today()):
